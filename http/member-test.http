@@ -4,3 +4,10 @@ Accept: application/json
 <> 2024-06-06T173214.200.json
 
 ###
+
+GET http://localhost:8000/member/hello
+Accept: application/json
+
+<> 2024-06-06T173214.200.json
+
+###
