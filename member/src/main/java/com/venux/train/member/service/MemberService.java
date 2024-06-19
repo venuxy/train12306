@@ -3,6 +3,7 @@ package com.venux.train.member.service;
 import cn.hutool.core.collection.CollUtil;
 import com.venux.train.common.exception.BusinessException;
 import com.venux.train.common.exception.BusinessExceptionEnum;
+import com.venux.train.common.util.SnowUtil;
 import com.venux.train.member.domain.Member;
 import com.venux.train.member.domain.MemberExample;
 import com.venux.train.member.mapper.MemberMapper;
@@ -35,7 +36,7 @@ public class MemberService {
                 }
 
                 Member member = new Member();
-                member.setId(System.currentTimeMillis());
+                member.setId(SnowUtil.getSnowflakeNextId());
                 member.setMobile(mobile);
                 memberMapper.insert(member);
                 return member.getId();
