@@ -14,7 +14,9 @@ mobile = 12345678
 ###
 
 
-GET http://localhost:8000/member/member/register
-Accept: application/json
+POST http://localhost:8000/member/member/send-code
+Content-Type: application/x-www-form-urlencoded
 
-<> 2024-06-06T173214.200.json
+mobile = 18844642579
+
+###
