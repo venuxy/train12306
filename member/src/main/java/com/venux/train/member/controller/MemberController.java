@@ -2,8 +2,10 @@ package com.venux.train.member.controller;
 
 
 import com.venux.train.common.resp.CommonResp;
+import com.venux.train.member.req.MemberLoginReq;
 import com.venux.train.member.req.MemberRegisterReq;
 import com.venux.train.member.req.MemberSendCodeReq;
+import com.venux.train.member.resp.MemberLoginResp;
 import com.venux.train.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -38,5 +40,12 @@ public class MemberController {
 
         memberService.sendCode(req);
         return new CommonResp<>();
+    }
+
+    @PostMapping("/login")
+    public CommonResp<MemberLoginResp> login(@Valid MemberLoginReq req){
+
+        MemberLoginResp resp = memberService.login(req);
+        return new CommonResp<>(resp);
     }
 }
