@@ -4,13 +4,18 @@ import HomeView from '../views/HomeView.vue'
 const routes = [
   {
     path: '/',
-    redirect: '/login',
+    redirect: '/main',
     component: HomeView
   },
   {
     path: '/login',
     name: 'login-view',
     component: () => import('../views/login.vue')
+  },
+  {
+    path: '/main',
+    name: 'main-view',
+    component: () => import('../views/mainView.vue')
   }
 ]
 
