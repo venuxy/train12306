@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.venux.train.common.exception.BusinessException;
 import com.venux.train.common.exception.BusinessExceptionEnum;
+import com.venux.train.common.util.JwtUtil;
 import com.venux.train.common.util.SnowUtil;
 import com.venux.train.member.domain.Member;
 import com.venux.train.member.domain.MemberExample;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MemberService {
@@ -91,7 +93,10 @@ public class MemberService {
                         throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
                 }
 
-            return BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+                MemberLoginResp memberLoginResp = BeanUtil.copyProperties(memberDB, MemberLoginResp.class);
+                String token = JwtUtil.createToken(memberLoginResp.getId(), memberLoginResp.getMobile());
+                memberLoginResp.setToken(token);
+                return memberLoginResp;
         }
 
         private Member selectByMobile(String mobile) {

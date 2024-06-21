@@ -5,6 +5,18 @@ public class MemberLoginResp {
 
     private String mobile;
 
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("MemberLoginResp{");
+        sb.append("id=").append(id);
+        sb.append(", mobile='").append(mobile).append('\'');
+        sb.append(", token='").append(token).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
+
+    private String token;
+
     public Long getId() {
         return id;
     }
@@ -21,15 +33,11 @@ public class MemberLoginResp {
         this.mobile = mobile;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", mobile=").append(mobile);
-        sb.append("]");
-        return sb.toString();
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
