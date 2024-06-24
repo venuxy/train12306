@@ -1,26 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import {notification} from "ant-design-vue";
 import store from "@/store";
 
 const routes = [
   {
-    path: '/',
-    redirect: '/login',
-    component: HomeView
-  },
-  {
     path: '/login',
-    name: 'login-view',
     component: () => import('../views/login.vue')
   },
   {
-    path: '/main',
+    path: '/',
     name: 'main-view',
     component: () => import('../views/mainView.vue'),
     meta: {
       loginRequire: true
     },
+    children: [{
+      path: 'welcome',
+      component: () => import('../views/main/welcome.vue'),
+    },{
+      path: 'passenger',
+      component: () => import('../views/main/passenger.vue'),
+    }
+    ]
+  },
+  {
+    path: '',
+    redirect: '/welcome'
   }
 
 ]
