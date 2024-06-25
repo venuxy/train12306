@@ -3,6 +3,7 @@ package com.venux.train.member.controller;
 
 import com.venux.train.common.context.LoginMemberContext;
 import com.venux.train.common.resp.CommonResp;
+import com.venux.train.common.resp.PageResp;
 import com.venux.train.member.req.PassengerQueryReq;
 import com.venux.train.member.req.PassengerSaveReq;
 import com.venux.train.member.resp.PassengerQueryResp;
@@ -25,9 +26,9 @@ public class PassengerController {
         return new CommonResp<>();
     }
     @GetMapping("/query-list")
-    public CommonResp<List<PassengerQueryResp>> queryList(@Valid PassengerQueryReq req){
+    public CommonResp<PageResp<PassengerQueryResp>> queryList(@Valid PassengerQueryReq req){
         req.setMemberId(LoginMemberContext.getId());
-        List<PassengerQueryResp> list = passengerService.queryList(req);
+        PageResp<PassengerQueryResp> list = passengerService.queryList(req);
         return new CommonResp<>(list);
     }
 
