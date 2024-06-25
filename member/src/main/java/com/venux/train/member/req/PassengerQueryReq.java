@@ -1,7 +1,9 @@
 package com.venux.train.member.req;
 
 
-public class PassengerQueryReq {
+import com.venux.train.common.req.PageReq;
+
+public class PassengerQueryReq extends PageReq {
 
     private Long memberId;
 

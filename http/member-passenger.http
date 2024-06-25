@@ -9,7 +9,7 @@ token: {{token}}
 }
 
 ###
-GET http://localhost:8000/member/passenger/query-list
+GET http://localhost:8000/member/passenger/query-list?page=2&size=200
 Accept: application/json
 token: {{token}}
 
