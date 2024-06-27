@@ -11,9 +11,7 @@ import org.dom4j.io.SAXReader;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ServerGenerator {
     static String serverPath = "[module]/src/main/java/com/venux/train/[module]/";
@@ -28,7 +26,7 @@ public class ServerGenerator {
         String module = generatorPath.replace("src/main/resources/generator-config-", "").replace(".xml", "");
         System.out.println("module: " + module);
         serverPath = serverPath.replace("[module]", module);
-        System.out.println("servicePath: " + serverPath);
+        System.out.println("serverPath: " + serverPath);
 
         //读取table节点
 
@@ -61,21 +59,29 @@ public class ServerGenerator {
 
         String tableNameCn = DbUtil.getTableComment(tableName.getText());
         List<Field> fieldList = DbUtil.getColumnByTableName(tableName.getText());
+        Set<String> typeSet = getJavaTypes(fieldList);
 
+
+        //组装参数
         Map<String, Object> param = new HashMap<String, Object>();
         param.put("Domain", Domain);
         param.put("domain", domain);
         param.put("do_main", do_main);
+        param.put("tableNameCn", tableNameCn);
+        param.put("fieldList", fieldList);
+        param.put("typeSet", typeSet);
         System.out.println("组装参数: " + param);
 
-        gen(Domain, param, "service");
-        gen(Domain, param, "controller");
+//        gen(Domain, param, "service");
+//        gen(Domain, param, "controller");
+        gen(Domain, param, "req", "saveReq");
 
     }
 
-    private static void gen(String Domain, Map<String, Object> param, String target) throws IOException, TemplateException {
+    private static void gen(String Domain, Map<String, Object> param,String packageName, String target) throws IOException, TemplateException {
         FreemarkerUtil.initConfig(target + ".ftl");
-        String toPath = serverPath + target + "/";
+        System.out.println(target + ".ftl");
+        String toPath = serverPath + packageName + "/";
 
         new File(toPath).mkdirs();
         String Target = target.substring(0, 1).toUpperCase() + target.substring(1);
@@ -93,5 +99,18 @@ public class ServerGenerator {
         Node node = document.selectSingleNode("//pom:configurationFile");
         System.out.println(node.getText());
         return node.getText();
+    }
+
+    /**
+     * 获取所有的java类型，使用Set去重
+     * @param fieldList
+     * @return
+     */
+    private static Set<String> getJavaTypes(List<Field> fieldList) {
+        Set<String> typeSet = new HashSet<>();
+        for (Field field : fieldList) {
+            typeSet.add(field.getJavaType());
+        }
+        return typeSet;
     }
 }
