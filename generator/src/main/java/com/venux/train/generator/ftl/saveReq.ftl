@@ -1,4 +1,4 @@
-package com.venux.train.member.req;
+package com.venux.train.${module}.req;
 
 <#list typeSet as type>
 <#if type=='Date'>

@@ -1,4 +1,4 @@
-package com.venux.train.member.service;
+package com.venux.train.${module}.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
@@ -8,12 +8,12 @@ import com.github.pagehelper.PageInfo;
 import com.venux.train.common.context.LoginMemberContext;
 import com.venux.train.common.resp.PageResp;
 import com.venux.train.common.util.SnowUtil;
-import com.venux.train.member.domain.${Domain};
-import com.venux.train.member.domain.${Domain}Example;
-import com.venux.train.member.mapper.${Domain}Mapper;
-import com.venux.train.member.req.${Domain}QueryReq;
-import com.venux.train.member.req.${Domain}SaveReq;
-import com.venux.train.member.resp.${Domain}QueryResp;
+import com.venux.train.${module}.domain.${Domain};
+import com.venux.train.${module}.domain.${Domain}Example;
+import com.venux.train.${module}.mapper.${Domain}Mapper;
+import com.venux.train.${module}.req.${Domain}QueryReq;
+import com.venux.train.${module}.req.${Domain}SaveReq;
+import com.venux.train.${module}.resp.${Domain}QueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

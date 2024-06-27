@@ -1,13 +1,13 @@
-package com.venux.train.member.controller;
+package com.venux.train.${module}.controller;
 
 
 import com.venux.train.common.context.LoginMemberContext;
 import com.venux.train.common.resp.CommonResp;
 import com.venux.train.common.resp.PageResp;
-import com.venux.train.member.req.${Domain}QueryReq;
-import com.venux.train.member.req.${Domain}SaveReq;
-import com.venux.train.member.resp.${Domain}QueryResp;
-import com.venux.train.member.service.${Domain}Service;
+import com.venux.train.${module}.req.${Domain}QueryReq;
+import com.venux.train.${module}.req.${Domain}SaveReq;
+import com.venux.train.${module}.resp.${Domain}QueryResp;
+import com.venux.train.${module}.service.${Domain}Service;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

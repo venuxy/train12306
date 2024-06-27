@@ -64,6 +64,7 @@ public class ServerGenerator {
 
         //组装参数
         Map<String, Object> param = new HashMap<String, Object>();
+        param.put("module", module);
         param.put("Domain", Domain);
         param.put("domain", domain);
         param.put("do_main", do_main);
@@ -72,8 +73,8 @@ public class ServerGenerator {
         param.put("typeSet", typeSet);
         System.out.println("组装参数: " + param);
 
-//        gen(Domain, param, "service");
-//        gen(Domain, param, "controller");
+        gen(Domain, param, "service", "service");
+        gen(Domain, param, "controller", "controller");
         gen(Domain, param, "req", "saveReq");
 
     }
