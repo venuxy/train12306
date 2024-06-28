@@ -1,4 +1,4 @@
-package com.venux.train.generator.server;
+package com.venux.train.generator.gen;
 
 import com.venux.train.generator.util.DbUtil;
 import com.venux.train.generator.util.Field;
