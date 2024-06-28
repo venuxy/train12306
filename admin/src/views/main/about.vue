@@ -1,5 +1,5 @@
 <template>
-  <h1>欢迎使用12306售票系统</h1>
+  <h1>关于12306</h1>
 </template>
 <script>
 import { defineComponent } from 'vue';

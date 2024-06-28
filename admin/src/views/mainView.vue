@@ -1,8 +1,10 @@
 <template>
   <a-layout id="components-layout-demo-top-side-2">
-    <the-header-view></the-header-view>
+      <the-header-view></the-header-view>
     <a-layout>
+      <a-layout-sider>
       <the-sider-view></the-sider-view>
+      </a-layout-sider>
       <a-layout-content
           :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
       >

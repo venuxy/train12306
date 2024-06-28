@@ -1,57 +1,32 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import {notification} from "ant-design-vue";
-import store from "@/store";
 
 const routes = [
-  {
-    path: '/login',
-    component: () => import('../views/login.vue')
-  },
   {
     path: '/',
     name: 'main-view',
     component: () => import('../views/mainView.vue'),
-    meta: {
-      loginRequire: true
-    },
-    children: [{
-      path: 'welcome',
-      component: () => import('../views/main/welcome.vue'),
-    },{
-      path: 'passenger',
-      component: () => import('../views/main/passenger.vue'),
-    }
+    children: [
+      {
+        path: 'welcome', // 默认访问 '/' 时不会渲染这个，除非在 mainView.vue 中有额外的逻辑
+        component: () => import('../views/main/welcome.vue')
+      },
+      {
+        path: 'about',
+        component: () => import('../views/main/about.vue')
+      },
+      // 如果你想要 welcome 作为默认子路由，你需要在 mainView.vue 中添加额外的逻辑
     ]
   },
-  {
-    path: '',
-    redirect: '/welcome'
-  }
-
-]
+  // 如果你确实需要重定向，并且想要替换 '/' 路由的行为，可以添加以下重定向规则
+  // {
+  //   path: '/',
+  //   redirect: '/welcome'
+  // }
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-// 路由登录拦截
-router.beforeEach((to, from, next) => {
-  // 要不要对meta.loginRequire属性做监控拦截
-  if (to.matched.some(function (item) {
-    console.log(item, "是否需要登录校验：", item.meta.loginRequire || false);
-    return item.meta.loginRequire
-  })) {
-    const _member = store.state.member;
-    console.log("页面登录校验开始：", _member);
-    if (!_member.token) {
-      console.log("用户未登录或登录超时！");
-      notification.error({ description: "未登录或登录超时" });
-      next('/login');
-    } else {
-      next();
-    }
-  } else {
-    next();
-  }
-});
+
 export default router
