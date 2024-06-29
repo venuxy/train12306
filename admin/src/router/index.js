@@ -21,6 +21,10 @@ const routes = [
       {
         path: 'train',
         component: () => import('../views/main/train.vue')
+      },
+      {
+        path: 'train-station',
+        component: () => import('../views/main/train-station.vue')
       }
       // 如果你想要 welcome 作为默认子路由，你需要在 mainView.vue 中添加额外的逻辑
     ]
