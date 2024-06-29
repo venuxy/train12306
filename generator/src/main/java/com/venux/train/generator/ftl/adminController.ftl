@@ -1,4 +1,4 @@
-package com.venux.train.${module}.controller;
+package com.venux.train.${module}.controller.admin;
 
 
 import com.venux.train.common.context.LoginMemberContext;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/${do_main}")
-public class ${Domain}Controller {
+@RequestMapping("/admin/${do_main}")
+public class ${Domain}AdminController {
     @Resource
     private ${Domain}Service ${domain}Service;
 
@@ -27,7 +27,6 @@ public class ${Domain}Controller {
     }
     @GetMapping("/query-list")
     public CommonResp<PageResp<${Domain}QueryResp>> queryList(@Valid ${Domain}QueryReq req){
-        req.setMemberId(LoginMemberContext.getId());
         PageResp<${Domain}QueryResp> list = ${domain}Service.queryList(req);
         return new CommonResp<>(list);
     }

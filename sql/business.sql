@@ -1,12 +1,11 @@
-DROP TABLE IF EXISTS `member`;
-
-CREATE TABLE `member` (
-                          `id` BIGINT NOT NULL COMMENT 'id',
-                          `mobile` VARCHAR(11) NOT NULL COMMENT '手机号',
-                          PRIMARY KEY (`id`),
-                          UNIQUE KEY `mobile_unique` (`mobile`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = '会员';
-
-INSERT INTO `member` (`id`, `mobile`) VALUES (1, '13800000000');
-
-
+drop table if exists `station`;
+create table `station` (
+                           `id` bigint not null comment 'id',
+                           `name` varchar(20) not null comment '站名',
+                           `name_pinyin` varchar(50) not null comment '站名拼音',
+                           `name_py` varchar(50) not null comment '站名拼音首字母',
+                           `create_time` datetime(3) comment '新增时间',
+                           `update_time` datetime(3) comment '修改时间',
+                           primary key (`id`),
+                           unique key `name_unique` (`name`)
+) engine=innodb default charset=utf8mb4 comment='车站';
