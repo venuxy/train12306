@@ -218,11 +218,23 @@ export default defineComponent({
       });
     };
 
+    const queryTrainCode = () => {
+      axios.get("/business/admin/train/query-all").then((response) => {
+        let data = response.data;
+        if (data.success) {
+          console.log(data.content);
+        } else {
+          notification.error({description: data.message});
+        }
+      });
+    };
+
     onMounted(() => {
       handleQuery({
         page: 1,
         size: pagination.value.pageSize
       });
+      queryTrainCode();
     });
 
     return {
