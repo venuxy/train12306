@@ -27,7 +27,7 @@
       </a-menu-item>
       <a-menu-item key="/train-station">
         <router-link to="/train-station">
-          <coffee-outlined /> &nbsp; 火车车站
+          <coffee-outlined /> &nbsp; 经停站
         </router-link>
       </a-menu-item>
       <a-menu-item key="/train-carriage">
