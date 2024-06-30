@@ -35,6 +35,11 @@
           <coffee-outlined /> &nbsp; 车厢
         </router-link>
       </a-menu-item>
+      <a-menu-item key="/train-seat">
+        <router-link to="/train-seat">
+          <coffee-outlined /> &nbsp; 座位
+        </router-link>
+      </a-menu-item>
     </a-menu>
 <!--  </a-layout-sider>-->
 </template>

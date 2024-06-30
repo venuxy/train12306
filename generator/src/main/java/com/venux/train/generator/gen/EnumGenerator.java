@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 //import com.venux.train.member.enums.SeatColEnum;
 //import com.venux.train.member.enums.SeatTypeEnum;
 //import com.venux.train.member.enums.TrainTypeEnum;
+import com.venux.train.business.enums.SeatColEnum;
 import com.venux.train.business.enums.SeatTypeEnum;
 import com.venux.train.business.enums.TrainTypeEnum;
 import com.venux.train.member.enums.PassengerTypeEnum;
@@ -31,7 +32,7 @@ public class EnumGenerator {
             toJson(PassengerTypeEnum.class, bufferObject, bufferArray);
             toJson(TrainTypeEnum.class, bufferObject, bufferArray);
             toJson(SeatTypeEnum.class, bufferObject, bufferArray);
-//            toJson(SeatColEnum.class, bufferObject, bufferArray);
+            toJson(SeatColEnum.class, bufferObject, bufferArray);
 //            toJson(ConfirmOrderStatusEnum.class, bufferObject, bufferArray);
 
             StringBuffer buffer = bufferObject.append("\r\n").append(bufferArray);
