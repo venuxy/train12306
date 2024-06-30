@@ -1,6 +1,7 @@
 package com.venux.train.business.controller.admin;
 
 
+import com.venux.train.business.resp.TrainQueryResp;
 import com.venux.train.common.context.LoginMemberContext;
 import com.venux.train.common.resp.CommonResp;
 import com.venux.train.common.resp.PageResp;
@@ -35,6 +36,12 @@ public class StationAdminController {
     public CommonResp<Object> delete(@PathVariable Long id) {
         stationService.delete(id);
         return new CommonResp<>();
+    }
+
+    @GetMapping("/query-all")
+    public CommonResp<List<StationQueryResp>> queryList(){
+        List<StationQueryResp> list = stationService.queryAll();
+        return new CommonResp<>(list);
     }
 
 }

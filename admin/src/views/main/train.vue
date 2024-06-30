@@ -45,7 +45,7 @@
         </a-select>
       </a-form-item>
       <a-form-item label="始发站">
-        <a-input v-model:value="train.start" />
+        <station-select-view v-model="train.start"></station-select-view>
       </a-form-item>
       <a-form-item label="始发站拼音">
         <a-input v-model:value="train.startPinyin" disabled/>
@@ -54,7 +54,7 @@
         <a-time-picker v-model:value="train.startTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
       </a-form-item>
       <a-form-item label="终点站">
-        <a-input v-model:value="train.end" />
+        <station-select-view v-model="train.end"></station-select-view>
       </a-form-item>
       <a-form-item label="终点站拼音">
         <a-input v-model:value="train.endPinyin" disabled/>
@@ -71,9 +71,17 @@ import {defineComponent, ref, onMounted, watch} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
 import {pinyin} from "pinyin-pro";
+import StationSelectView from "@/components/station-select.vue";
+import station from "@/views/main/station.vue";
 
 export default defineComponent({
   name: "train-view",
+  computed: {
+    station() {
+      return station
+    }
+  },
+  components: {StationSelectView},
   setup() {
     const TRAIN_TYPE_ARRAY = window.TRAIN_TYPE_ARRAY;
     const visible = ref(false);
