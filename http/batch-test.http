@@ -1,0 +1,13 @@
+GET http://localhost:8003/batch/hello
+Accept: application/json
+
+<> 2024-06-06T173214.200.json
+
+###
+
+GET http://localhost:8000/batch/hello
+Accept: application/json
+
+<> 2024-06-06T173214.200.json
+
+###
