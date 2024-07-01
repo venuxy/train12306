@@ -97,7 +97,7 @@ export default defineComponent({
     });
     let loading = ref(false);
     let params = ref({
-      trainCode: ""
+      trainCode: null
     });
     const columns = [
     {
