@@ -31,21 +31,21 @@ public class TrainStationService {
 
     public void save(TrainStationSaveReq req){
 
-        // 保存之前，先校验唯一键是否存在
-        TrainStation trainStationDB = selectByUnique(req.getTrainCode(), req.getIndex());
-        if (ObjectUtil.isNotEmpty(trainStationDB)) {
-            throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR);
-        }
-        // 保存之前，先校验唯一键是否存在
-        trainStationDB = selectByUnique(req.getTrainCode(), req.getName());
-        if (ObjectUtil.isNotEmpty(trainStationDB)) {
-            throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_NAME_UNIQUE_ERROR);
-        }
-
         DateTime now = DateTime.now();
         TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
         //如果id为空，说明是新增，否则是修改
         if (ObjectUtil.isNull(trainStation.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            TrainStation trainStationDB = selectByUnique(req.getTrainCode(), req.getIndex());
+            if (ObjectUtil.isNotEmpty(trainStationDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR);
+            }
+            // 保存之前，先校验唯一键是否存在
+            trainStationDB = selectByUnique(req.getTrainCode(), req.getName());
+            if (ObjectUtil.isNotEmpty(trainStationDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_NAME_UNIQUE_ERROR);
+            }
+
             trainStation.setId(SnowUtil.getSnowflakeNextId());
             trainStation.setCreateTime(now);
             trainStation.setUpdateTime(now);
