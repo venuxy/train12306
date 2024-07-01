@@ -1,11 +1,14 @@
 package com.venux.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.venux.train.business.enums.SeatColEnum;
+import com.venux.train.common.exception.BusinessException;
+import com.venux.train.common.exception.BusinessExceptionEnum;
 import com.venux.train.common.resp.PageResp;
 import com.venux.train.common.util.SnowUtil;
 import com.venux.train.business.domain.TrainCarriage;
@@ -38,6 +41,11 @@ public class TrainCarriageService {
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         //如果id为空，说明是新增，否则是修改
         if (ObjectUtil.isNull(trainCarriage.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            TrainCarriage trainCarriageDB = selectByUnique(req.getTrainCode(), req.getIndex());
+            if (ObjectUtil.isNotEmpty(trainCarriageDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
+            }
             trainCarriage.setId(SnowUtil.getSnowflakeNextId());
             trainCarriage.setCreateTime(now);
             trainCarriage.setUpdateTime(now);
@@ -47,6 +55,20 @@ public class TrainCarriageService {
             trainCarriageMapper.updateByPrimaryKey(trainCarriage);
         }
     }
+
+    private TrainCarriage selectByUnique(String trainCode, Integer index) {
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        trainCarriageExample.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andIndexEqualTo(index);
+        List<TrainCarriage> list = trainCarriageMapper.selectByExample(trainCarriageExample);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
+
     public PageResp<TrainCarriageQueryResp> queryList(TrainCarriageQueryReq req){
         TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
         trainCarriageExample.setOrderByClause("train_code asc, `index` asc");

@@ -1,10 +1,13 @@
 package com.venux.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.venux.train.common.exception.BusinessException;
+import com.venux.train.common.exception.BusinessExceptionEnum;
 import com.venux.train.common.resp.PageResp;
 import com.venux.train.common.util.SnowUtil;
 import com.venux.train.business.domain.TrainStation;
@@ -27,6 +30,18 @@ public class TrainStationService {
     private TrainStationMapper trainStationMapper;
 
     public void save(TrainStationSaveReq req){
+
+        // 保存之前，先校验唯一键是否存在
+        TrainStation trainStationDB = selectByUnique(req.getTrainCode(), req.getIndex());
+        if (ObjectUtil.isNotEmpty(trainStationDB)) {
+            throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR);
+        }
+        // 保存之前，先校验唯一键是否存在
+        trainStationDB = selectByUnique(req.getTrainCode(), req.getName());
+        if (ObjectUtil.isNotEmpty(trainStationDB)) {
+            throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_NAME_UNIQUE_ERROR);
+        }
+
         DateTime now = DateTime.now();
         TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
         //如果id为空，说明是新增，否则是修改
@@ -40,6 +55,34 @@ public class TrainStationService {
             trainStationMapper.updateByPrimaryKey(trainStation);
         }
     }
+
+    private TrainStation selectByUnique(String trainCode, Integer index) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        trainStationExample.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andIndexEqualTo(index);
+        List<TrainStation> list = trainStationMapper.selectByExample(trainStationExample);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    private TrainStation selectByUnique(String trainCode, String name) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        trainStationExample.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andNameEqualTo(name);
+        List<TrainStation> list = trainStationMapper.selectByExample(trainStationExample);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
+
+
     public PageResp<TrainStationQueryResp> queryList(TrainStationQueryReq req){
         TrainStationExample trainStationExample = new TrainStationExample();
         trainStationExample.setOrderByClause("train_code asc, `index` asc");
