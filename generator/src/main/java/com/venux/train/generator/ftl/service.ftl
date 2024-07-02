@@ -42,7 +42,7 @@ public class ${Domain}Service {
     }
     public PageResp<${Domain}QueryResp> queryList(${Domain}QueryReq req){
         ${Domain}Example ${domain}Example = new ${Domain}Example();
-        ${domain}Example.setOrderByClause("create_time desc");
+        ${domain}Example.setOrderByClause("id desc");
         ${Domain}Example.Criteria criteria = ${domain}Example.createCriteria();
 
 
