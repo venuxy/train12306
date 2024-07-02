@@ -63,7 +63,7 @@ import axios from "axios";
 import {pinyin} from "pinyin-pro";
 import TrainSelectView from "@/components/train-select.vue";
 import StationSelectView from "@/components/station-select.vue";
-import station from "@/views/main/station.vue";
+import station from "@/views/main/base/station.vue";
 import dayjs from 'dayjs';
 
 export default defineComponent({

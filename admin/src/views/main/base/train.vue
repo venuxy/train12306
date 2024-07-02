@@ -78,7 +78,7 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 import {pinyin} from "pinyin-pro";
 import StationSelectView from "@/components/station-select.vue";
-import station from "@/views/main/station.vue";
+import station from "@/views/main/base/station.vue";
 
 export default defineComponent({
   name: "train-view",
