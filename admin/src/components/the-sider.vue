@@ -2,7 +2,7 @@
 <!--  <a-layout-sider width="200" style="background: #fff">-->
     <a-menu
         v-model:selectedKeys="selectedKeys"
-        :openKeys="['batch', 'base']"
+        :openKeys="['batch', 'base', 'business']"
         mode="inline"
         :style="{ height: '100%', borderRight: 0 }"
     >
@@ -27,9 +27,15 @@
           <router-link to="/business/daily-train">
             <MenuUnfoldOutlined /> &nbsp; 每日车次
           </router-link>
-        </a-menu-item><a-menu-item key="/business/daily-train-station">
+        </a-menu-item>
+        <a-menu-item key="/business/daily-train-station">
           <router-link to="/business/daily-train-station">
             <MenuUnfoldOutlined /> &nbsp; 每日经停站
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="/business/daily-train-carriage">
+          <router-link to="/business/daily-train-carriage">
+            <MenuUnfoldOutlined /> &nbsp; 每日车厢
           </router-link>
         </a-menu-item>
       </a-sub-menu>
