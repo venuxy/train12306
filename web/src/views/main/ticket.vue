@@ -14,6 +14,7 @@
            :loading="loading">
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'operation'">
+        <a-button type="primary" @click="toOrder(record)">预定</a-button>
       </template>
       <template v-else-if="column.dataIndex === 'station'">
         {{record.start}}<br/>
@@ -78,6 +79,7 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 import StationSelectView from "@/components/station-select";
 import dayjs from "dayjs";
+import rooter from "@/router";
 
 export default defineComponent({
   name: "ticket-view",
@@ -154,6 +156,14 @@ export default defineComponent({
         dataIndex: 'yw',
         key: 'yw',
       },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        key: 'operation',
+        width: 100,
+        align: 'center',
+        scopedSlots: {customRender: 'operation'}
+      }
     ];
 
 
@@ -176,6 +186,10 @@ export default defineComponent({
           size: pagination.value.pageSize
         };
       }
+
+      //保存查询参数
+      SessionStorage.set(SESSION_TICKET_PARAMS, params.value);
+
       loading.value = true;
       axios.get("/business/daily-train-ticket/query-list", {
         params: {
@@ -214,11 +228,19 @@ export default defineComponent({
       return dayjs('00:00:00', 'HH:mm:ss').second(diff).format('HH:mm:ss');
     };
 
+    const toOrder = (record) => {
+      SessionStorage.set(SESSION_ORDER, record);
+      rooter.push("/order")
+    };
+
     onMounted(() => {
-      // handleQuery({
-      //   page: 1,
-      //   size: pagination.value.pageSize
-      // });
+      params.value = SessionStorage.get(SESSION_TICKET_PARAMS) || {};
+      if (Tool.isNotEmpty(params.value)) {
+        handleQuery({
+              page: 1,
+              size: pagination.value.pageSize
+        });
+      }
     });
 
     return {
@@ -231,7 +253,8 @@ export default defineComponent({
       handleQuery,
       loading,
       params,
-      calDuration
+      calDuration,
+      toOrder
     };
   },
 });
