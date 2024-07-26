@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -57,8 +58,23 @@ public class DailyTrainTicketService {
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req){
         DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
         dailyTrainTicketExample.setOrderByClause("id desc");
+        // 创建每日火车票查询的条件对象
         DailyTrainTicketExample.Criteria criteria = dailyTrainTicketExample.createCriteria();
 
+        // 如果请求中指定了日期，则添加日期条件到查询 criteria 中
+        if (ObjUtil.isNotNull(req.getDate())) {
+            criteria.andDateEqualTo(req.getDate());
+        }
+        // 如果请求中指定了车次代码，则添加车次条件到查询 criteria 中
+        if (ObjUtil.isNotEmpty(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
+        if (ObjUtil.isNotEmpty(req.getStart())) {
+            criteria.andStartEqualTo(req.getStart());
+        }
+        if (ObjUtil.isNotEmpty(req.getEnd())) {
+            criteria.andEndEqualTo(req.getEnd());
+        }
 
         LOG.info("查询页码，{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
