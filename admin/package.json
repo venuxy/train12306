@@ -44,7 +44,8 @@
     },
     "rules": {
       "vue/multi-word-component-names": 0,
-      "no-undef": 0
+      "no-undef": 0,
+      "vue/no-unused-vars": 0
     }
   },
   "browserslist": [

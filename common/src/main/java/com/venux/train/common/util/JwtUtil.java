@@ -24,7 +24,9 @@ public class JwtUtil {
     public static String createToken(Long id, String mobile) {
         LOG.info("开始生成JWT token，id：{}，mobile：{}", id, mobile);
         GlobalBouncyCastleProvider.setUseBouncyCastle(false);
-        DateTime now = DateTime.now();
+        DateTime now = DateTime.now();        // 设置不使用Bouncy Castle加密库
+        GlobalBouncyCastleProvider.setUseBouncyCastle(false);
+
         DateTime expTime = now.offsetNew(DateField.HOUR, 24);
         Map<String, Object> payload = new HashMap<>();
         // 签发时间
