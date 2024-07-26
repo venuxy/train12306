@@ -19,16 +19,24 @@ SESSION_TICKET_PARAMS = 'SESSION_TICKET_PARAMS';
         <span class="order-train-ticket-main">{{item.count}}</span>&nbsp;张票&nbsp;&nbsp;
       </span>
     </div>
-
-
   </div>
+  <a-divider></a-divider>
+  {{passengers}}
 </template>
 <script>
-import { defineComponent } from 'vue';
+import {defineComponent, onMounted, ref} from 'vue';
+import passenger from "./passenger.vue";
+import axios from "axios";
 
 export default defineComponent({
   name: 'order-view',
+  computed: {
+    passenger() {
+      return passenger
+    }
+  },
   setup() {
+    const passengers = ref([]);
     const  dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
     console.log("下单的车次信息",dailyTrainTicket);
     const SEAT_TYPE = window.SEAT_TYPE;
@@ -56,9 +64,31 @@ export default defineComponent({
       }
     }
     console.log("本车次提供的座位：", seatTypes)
+
+    const handleQueryPassenger = () => {
+      axios.get("/member/passenger/query-mine").then((response) => {
+        let data = response.data;
+        if (data.success) {
+          passengers.value = data.content;
+          // passengers.value = data.content;
+          // passengers.value.forEach((item) => passengerOptions.value.push({
+          //   label: item.name,
+          //   value: item
+          // }))
+        } else {
+          notification.error({description: data.message});
+        }
+      });
+    };
+
+    onMounted(() => {
+      handleQueryPassenger();
+    });
+
     return {
       dailyTrainTicket,
-      seatTypes
+      seatTypes,
+      passengers
     };
   },
 });
