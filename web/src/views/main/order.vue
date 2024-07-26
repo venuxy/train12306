@@ -2,7 +2,6 @@
 SESSION_ORDER = 'SESSION_ORDER';
 SESSION_TICKET_PARAMS = 'SESSION_TICKET_PARAMS';
 <template>
-<!--  <div>{{ dailyTrainTicket }}</div>-->
   <div class="order-train">
     <span class="order-train-main">{{ dailyTrainTicket.date }}</span>&nbsp;
     <span class="order-train-main">{{ dailyTrainTicket.trainCode }}</span>次&nbsp;
@@ -21,10 +20,73 @@ SESSION_TICKET_PARAMS = 'SESSION_TICKET_PARAMS';
     </div>
   </div>
   <a-divider></a-divider>
-  {{passengers}}
+  <b>勾选要购票的乘客：</b>&nbsp;
+  <a-checkbox-group v-model:value="passengerChecks" :options="passengerOptions" />
+
+  <div class="order-tickets">
+    <a-row class="order-tickets-header" v-if="tickets.length > 0">
+      <a-col :span="2">乘客</a-col>
+      <a-col :span="6">身份证</a-col>
+      <a-col :span="4">票种</a-col>
+      <a-col :span="4">座位类型</a-col>
+    </a-row>
+    <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
+      <a-col :span="2">{{ticket.passengerName}}</a-col>
+      <a-col :span="6">{{ticket.passengerIdCard}}</a-col>
+      <a-col :span="4">
+        <a-select v-model:value="ticket.passengerType" style="width: 100%">
+          <a-select-option v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code" :value="item.code">
+            {{item.desc}}
+          </a-select-option>
+        </a-select>
+      </a-col>
+      <a-col :span="4">
+        <a-select v-model:value="ticket.seatTypeCode" style="width: 100%">
+          <a-select-option v-for="item in seatTypes" :key="item.code" :value="item.code">
+            {{item.desc}}
+          </a-select-option>
+        </a-select>
+      </a-col>
+    </a-row>
+  </div>
+  <div v-if="tickets.length > 0">
+    <a-button type="primary" size="large" @click="finishCheckPassenger">提交订单</a-button>
+  </div>
+
+  <a-modal v-model:visible="visible" title="请核对以下信息"
+           style="top: 50px; width: 800px"
+           ok-text="确认" cancel-text="取消"
+           @ok="showFirstImageCodeModal">
+    <div class="order-tickets">
+      <a-row class="order-tickets-header" v-if="tickets.length > 0">
+        <a-col :span="3">乘客</a-col>
+        <a-col :span="15">身份证</a-col>
+        <a-col :span="3">票种</a-col>
+        <a-col :span="3">座位类型</a-col>
+      </a-row>
+      <a-row class="order-tickets-row" v-for="ticket in tickets" :key="ticket.passengerId">
+        <a-col :span="3">{{ticket.passengerName}}</a-col>
+        <a-col :span="15">{{ticket.passengerIdCard}}</a-col>
+        <a-col :span="3">
+          <span v-for="item in PASSENGER_TYPE_ARRAY" :key="item.code">
+            <span v-if="item.code === ticket.passengerType">
+              {{item.desc}}
+            </span>
+          </span>
+        </a-col>
+        <a-col :span="3">
+          <span v-for="item in seatTypes" :key="item.code">
+            <span v-if="item.code === ticket.seatTypeCode">
+              {{item.desc}}
+            </span>
+          </span>
+        </a-col>
+      </a-row>
+    </div>
+  </a-modal>
 </template>
 <script>
-import {defineComponent, onMounted, ref} from 'vue';
+import {defineComponent, onMounted, ref, watch} from 'vue';
 import passenger from "./passenger.vue";
 import axios from "axios";
 
@@ -36,9 +98,12 @@ export default defineComponent({
     }
   },
   setup() {
+    const visible = ref(false);
     const passengers = ref([]);
-    const  dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
-    console.log("下单的车次信息",dailyTrainTicket);
+    const passengerOptions = ref([]);
+    const passengerChecks = ref([]);
+    const dailyTrainTicket = SessionStorage.get(SESSION_ORDER) || {};
+    console.log("下单的车次信息", dailyTrainTicket);
     const SEAT_TYPE = window.SEAT_TYPE;
     console.log(SEAT_TYPE)
     // 本车次提供的座位类型seatTypes，含票价，余票等信息，例：
@@ -70,16 +135,52 @@ export default defineComponent({
         let data = response.data;
         if (data.success) {
           passengers.value = data.content;
-          // passengers.value = data.content;
-          // passengers.value.forEach((item) => passengerOptions.value.push({
-          //   label: item.name,
-          //   value: item
-          // }))
+          passengers.value.forEach((item) => passengerOptions.value.push({
+            label: item.name,
+            value: item
+          }))
         } else {
           notification.error({description: data.message});
         }
       });
     };
+
+    const finishCheckPassenger = () => {
+          console.log("购票列表：", tickets.value);
+
+          if (tickets.value.length > 5) {
+            notification.error({description: '最多只能购买5张车票'});
+            return;
+          }
+
+          visible.value = true;
+    }
+
+    // 购票列表，用于界面展示，并传递到后端接口，用来描述：哪个乘客购买什么座位的票
+    // {
+    //   passengerId: 123,
+    //   passengerType: "1",
+    //   passengerName: "张三",
+    //   passengerIdCard: "12323132132",
+    //   seatTypeCode: "1",
+    //   seat: "C1"
+    // }
+    const tickets = ref([]);
+    const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
+
+    // 勾选或去掉某个乘客时，在购票列表中加上或去掉一张表
+    watch(() => passengerChecks.value, (newVal, oldVal)=>{
+      console.log("勾选乘客发生变化", newVal, oldVal)
+      // 每次有变化时，把购票列表清空，重新构造列表
+      tickets.value = [];
+      passengerChecks.value.forEach((item) => tickets.value.push({
+        passengerId: item.id,
+        passengerType: item.type,
+        seatTypeCode: seatTypes[0].code,
+        passengerName: item.name,
+        passengerIdCard: item.idCard
+      }))
+    }, {immediate: true});
 
     onMounted(() => {
       handleQueryPassenger();
@@ -88,7 +189,13 @@ export default defineComponent({
     return {
       dailyTrainTicket,
       seatTypes,
-      passengers
+      passengers,
+      passengerOptions,
+      passengerChecks,
+      tickets,
+      finishCheckPassenger,
+      visible,
+      PASSENGER_TYPE_ARRAY
     };
   },
 });
@@ -112,4 +219,25 @@ export default defineComponent({
   color: red;
   font-size: 18px;
 }
+
+.order-tickets {
+  margin: 10px 0;
+}
+.order-tickets .ant-col {
+  padding: 5px 10px;
+}
+.order-tickets .order-tickets-header {
+  background-color: cornflowerblue;
+  border: solid 1px cornflowerblue;
+  color: white;
+  font-size: 16px;
+  padding: 5px 0;
+}
+.order-tickets .order-tickets-row {
+  border: solid 1px cornflowerblue;
+  border-top: none;
+  vertical-align: middle;
+  line-height: 30px;
+}
+
 </style>
