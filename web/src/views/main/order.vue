@@ -243,13 +243,13 @@ export default defineComponent({
             let seatType = seatTypes[i];
             // 找到同类型座位
             if (ticketSeatTypeCodesSet[0] === seatType.code) {
-              // 判断余票，小于20张就不支持选座
-              // if (seatType.count < 20) {
-              //   console.log(seatType.count)
-              //   console.log("余票小于20张就不支持选座")
-              //   chooseSeatType.value = 0;
-              //   break;
-              // }
+              // 判断余票，小于10张就不支持选座
+              if (seatType.count < 10) {
+                console.log(seatType.count)
+                console.log("余票小于20张就不支持选座")
+                chooseSeatType.value = 0;
+                break;
+              }
             }
           }
         }
