@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.venux.train.business.domain.DailyTrainTicket;
 import com.venux.train.business.enums.ConfirmOrderStatusEnum;
 import com.venux.train.common.context.LoginMemberContext;
 import com.venux.train.common.resp.PageResp;
@@ -29,6 +30,8 @@ public class ConfirmOrderService {
     private static final Logger LOG = LoggerFactory.getLogger(ConfirmOrderService.class);
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
+    @Resource
+    private DailyTrainTicketService dailyTrainTicketService;
 
     public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
@@ -74,19 +77,28 @@ public class ConfirmOrderService {
     public void doConfirm(ConfirmOrderDoReq req){
         //保存确认订单表，状态设置为初始
         DateTime now = DateTime.now();
+        Date date = req.getDate();
+        String trainCode = req.getTrainCode();
+        String start = req.getStart();
+        String end = req.getEnd();
         ConfirmOrder confirmOrder = new ConfirmOrder();
         confirmOrder.setId(SnowUtil.getSnowflakeNextId());
         confirmOrder.setCreateTime(now);
         confirmOrder.setUpdateTime(now);
         confirmOrder.setMemberId(LoginMemberContext.getId());
-        confirmOrder.setDate(req.getDate());
-        confirmOrder.setTrainCode(req.getTrainCode());
-        confirmOrder.setStart(req.getStart());
-        confirmOrder.setEnd(req.getEnd());
+        confirmOrder.setDate(date);
+        confirmOrder.setTrainCode(trainCode);
+        confirmOrder.setStart(start);
+        confirmOrder.setEnd(end);
         confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
         confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
         confirmOrder.setTickets(JSON.toJSONString(req.getTickets()));
         confirmOrderMapper.insert(confirmOrder);
+
+        // 查出余票记录，需要得到真实的库存
+        DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(date, trainCode, start, end);
+        LOG.info("查询余票记录:{}", dailyTrainTicket);
+
 
     }
 }
