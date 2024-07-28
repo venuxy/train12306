@@ -56,7 +56,7 @@ SESSION_TICKET_PARAMS = 'SESSION_TICKET_PARAMS';
   <a-modal v-model:visible="visible" title="请核对以下信息"
            style="top: 50px; width: 800px"
            ok-text="确认" cancel-text="取消"
-           @ok="showFirstImageCodeModal">
+           @ok="handleOk">
     <div class="order-tickets">
       <a-row class="order-tickets-header" v-if="tickets.length > 0">
         <a-col :span="3">乘客</a-col>
@@ -97,13 +97,16 @@ SESSION_TICKET_PARAMS = 'SESSION_TICKET_PARAMS';
         </div>
         <div style="color: #999999">提示：您可以选择{{tickets.length}}个座位</div>
       </div>
-
-    </div>
+      <br/>
+      最终购票：{{tickets}}
+      最终选座: {{chooseSeatObj}}
+     </div>
   </a-modal>
 </template>
 <script>
 import {defineComponent, onMounted, ref, watch, computed} from 'vue';
 import passenger from "./passenger.vue";
+import {notification} from "ant-design-vue";
 import axios from "axios";
 
 export default defineComponent({
@@ -246,7 +249,7 @@ export default defineComponent({
               // 判断余票，小于10张就不支持选座
               if (seatType.count < 10) {
                 console.log(seatType.count)
-                console.log("余票小于20张就不支持选座")
+                console.log("余票小于10张就不支持选座")
                 chooseSeatType.value = 0;
                 break;
               }
@@ -260,6 +263,34 @@ export default defineComponent({
       console.log("SEAT_COL_ARRAY:", SEAT_COL_ARRAY.value);
       // 弹出确认界面
       visible.value = true;
+    }
+
+    const handleOk = () => {
+      console.log("选好的座位：", chooseSeatObj.value);
+
+      // 设置每张票的座位
+      // 先清空购票列表的座位，有可能之前选了并设置座位了，但选座数不对被拦截了，又重新选一遍
+      for (let i = 0; i < tickets.value.length; i++) {
+        tickets.value[i].seat = null;
+      }
+      let i = -1;
+      // 要么不选座位，要么所选座位应该等于购票数，即i === (tickets.value.length - 1)
+      for (let key in chooseSeatObj.value) {
+        if (chooseSeatObj.value[key]) {
+          i++;
+          if (i > tickets.value.length - 1) {
+            notification.error({description: '所选座位数大于购票数'});
+            return;
+          }
+          tickets.value[i].seat = key;
+        }
+      }
+      if (i > -1 && i < (tickets.value.length - 1)) {
+        notification.error({description: '所选座位数小于购票数'});
+        return;
+      }
+
+      console.log("最终购票：", tickets.value);
     }
 
     // 购票列表，用于界面展示，并传递到后端接口，用来描述：哪个乘客购买什么座位的票
@@ -304,7 +335,8 @@ export default defineComponent({
       PASSENGER_TYPE_ARRAY,
       chooseSeatType,
       chooseSeatObj,
-      SEAT_COL_ARRAY
+      SEAT_COL_ARRAY,
+      handleOk
     };
   },
 });
