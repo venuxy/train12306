@@ -291,6 +291,22 @@ export default defineComponent({
       }
 
       console.log("最终购票：", tickets.value);
+
+      axios.post("/business/confirm-order/do", {
+        dailyTrainTicketId: dailyTrainTicket.id,
+        date: dailyTrainTicket.date,
+        trainCode: dailyTrainTicket.trainCode,
+        start: dailyTrainTicket.start,
+        end: dailyTrainTicket.end,
+        tickets: tickets.value,
+      }).then((response) => {
+        let data = response.data;
+        if (data.success) {
+          notification.success({description: "下单成功！"});
+        } else {
+          notification.error({description: data.message});
+        }
+      });
     }
 
     // 购票列表，用于界面展示，并传递到后端接口，用来描述：哪个乘客购买什么座位的票
