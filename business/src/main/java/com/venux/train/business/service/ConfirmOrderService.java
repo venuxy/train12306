@@ -177,7 +177,11 @@ public class ConfirmOrderService {
             }
         }
 
+        LOG.info("最终选座：{}", finalSeatList);
+
     }
+
+
 
     /**
      * 挑座位，如果有选座，则一次性挑完，如果无选座，则一个一个挑
