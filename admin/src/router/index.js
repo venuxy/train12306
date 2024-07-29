@@ -54,12 +54,17 @@ const routes = [
           path: 'train-seat',
           component: () => import('../views/main/base/train-seat.vue'),
         }]
-      },
-      {
+      }, {
         path: 'batch/',
         children: [{
           path: 'job',
           component: () => import('../views/main/batch/job.vue')
+        }]
+      }, {
+        path: 'member/',
+        children: [{
+          path: 'ticket',
+          component: () => import('../views/main/member/ticket.vue')
         }]
       }
 
