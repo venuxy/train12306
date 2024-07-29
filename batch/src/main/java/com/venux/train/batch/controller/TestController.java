@@ -20,6 +20,6 @@ private static final Logger LOG = LoggerFactory.getLogger(TestController.class);
     public String hello(){
         String businessHello = businessFeign.hello();
         LOG.info("businessHello: {}", businessHello);
-        return "hello world from batch!" + businessHello;
+        return businessHello;
     }
 }
