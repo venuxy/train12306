@@ -58,6 +58,12 @@ public class DailyTrainTicketService {
         }
     }
 
+    @Cacheable(value = "DailyTrainTicketService.queryList3")
+    public PageResp<DailyTrainTicketQueryResp> queryList3(DailyTrainTicketQueryReq req) {
+        LOG.info("测试缓存穿透");
+        return null;
+    }
+
     @CachePut(value = "DailyTrainTicketService.queryList")
     public PageResp<DailyTrainTicketQueryResp> queryList2(DailyTrainTicketQueryReq req) {
         return queryList(req);
