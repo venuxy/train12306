@@ -1,8 +1,9 @@
 package com.venux.train.business.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Train {
+public class Train implements Serializable {
     private Long id;
 
     private String code;
