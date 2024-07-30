@@ -29,6 +29,7 @@ import com.venux.train.common.req.MemberTicketReq;
 import com.venux.train.common.resp.CommonResp;
 import com.venux.train.common.resp.PageResp;
 import com.venux.train.common.util.SnowUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ public class AfterConfirmOrderService {
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
 
+    @GlobalTransactional
     public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> finalSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) throws Exception {
         for (int j = 0; j < finalSeatList.size(); j++) {
             DailyTrainSeat dailyTrainSeat = finalSeatList.get(j);
