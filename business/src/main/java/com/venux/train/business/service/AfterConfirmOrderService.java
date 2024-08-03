@@ -51,7 +51,7 @@ public class AfterConfirmOrderService {
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
 
-    @GlobalTransactional
+//    @GlobalTransactional
     public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> finalSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) throws Exception {
         for (int j = 0; j < finalSeatList.size(); j++) {
             DailyTrainSeat dailyTrainSeat = finalSeatList.get(j);

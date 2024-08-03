@@ -1,0 +1,24 @@
+POST http://localhost:8000/business/confirm-order/do
+Content-Type: application/json
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjIzOTIzNzEsIm1vYmlsZSI6IjEzODAwMDAwMDAwIiwiaWQiOjEsImV4cCI6MTcyMjQ3ODc3MSwiaWF0IjoxNzIyMzkyMzcxfQ.gIgy40LyeJjg7CE5CtclgeWiB1u-LbrDZvQ_v2NxG74
+
+{
+  "dailyTrainTicketId":1816757999490961408,
+  "date":1721923200000,
+  "end":"上海",
+  "start":"北京",
+  "tickets": [{
+    "passengerId":1804427905070141440,
+    "passengerIdCard":"123321",
+    "passengerName":"test",
+    "passengerType":"1",
+    "seatTypeCode":"1"
+  }],
+  "trainCode":"G1"
+}
+
+###
+
+GET http://localhost:8000/business/confirm-order/query-line-count/1662452972099080192
+Content-Type: application/json
+token: {{token}}

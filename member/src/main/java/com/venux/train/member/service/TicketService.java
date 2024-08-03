@@ -35,7 +35,7 @@ public class TicketService {
      * @param req
      */
     public void save(MemberTicketReq req) throws Exception {
-         LOG.info("seata全局事务ID save: {}", RootContext.getXID());
+        LOG.info("seata全局事务ID save: {}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
         ticket.setId(SnowUtil.getSnowflakeNextId());
@@ -43,9 +43,9 @@ public class TicketService {
         ticket.setUpdateTime(now);
         ticketMapper.insert(ticket);
         // 模拟被调用方出现异常
-         if (1 == 1) {
-             throw new Exception("测试异常11");
-         }
+//         if (1 == 1) {
+//             throw new Exception("测试异常11");
+//         }
     }
     public PageResp<TicketQueryResp> queryList(TicketQueryReq req){
         TicketExample ticketExample = new TicketExample();

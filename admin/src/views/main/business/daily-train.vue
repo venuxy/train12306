@@ -274,13 +274,13 @@ export default defineComponent({
         let data = response.data;
         if (data.success) {
           notification.success({description: "生成成功！"});
-          genDailyVisible.value = false;
-          handleQuery({
-            page: pagination.value.current,
-            size: pagination.value.pageSize
-          });
-        } else {
-          notification.error({description: data.message});
+            genDailyVisible.value = false;
+            handleQuery({
+                          page: pagination.value.current,
+                          size: pagination.value.pageSize
+                        });
+          } else {
+            notification.error({description: data.message});
         }
       });
     };
