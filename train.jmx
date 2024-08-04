@@ -144,7 +144,7 @@
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">token</stringProp>
-                <stringProp name="Header.value">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjI1OTM3MzAsIm1vYmlsZSI6IjEzODAwMDAwMDAwIiwiaWQiOjEsImV4cCI6MTcyMjY4MDEzMCwiaWF0IjoxNzIyNTkzNzMwfQ.Zz5TI4JzTr5czDuGINKbXv-TnqTdswlUIhNPI_1IK6o</stringProp>
+                <stringProp name="Header.value">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjI2ODAyNDksIm1vYmlsZSI6IjEzODAwMDAwMDAwIiwiaWQiOjEsImV4cCI6MTcyMjc2NjY0OSwiaWF0IjoxNzIyNjgwMjQ5fQ.Ufzm89Q7tSwxsPKEW9lPSG65C0s97xhRBnuK9Lka2cs</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>

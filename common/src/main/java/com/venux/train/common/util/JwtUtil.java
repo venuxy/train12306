@@ -27,7 +27,7 @@ public class JwtUtil {
         DateTime now = DateTime.now();        // 设置不使用Bouncy Castle加密库
         GlobalBouncyCastleProvider.setUseBouncyCastle(false);
 
-        DateTime expTime = now.offsetNew(DateField.HOUR, 24);
+        DateTime expTime = now.offsetNew(DateField.HOUR, 72);
         Map<String, Object> payload = new HashMap<>();
         // 签发时间
         payload.put(JWTPayload.ISSUED_AT, now);
