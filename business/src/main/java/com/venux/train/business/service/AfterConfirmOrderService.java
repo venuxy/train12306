@@ -29,7 +29,7 @@ import com.venux.train.common.req.MemberTicketReq;
 import com.venux.train.common.resp.CommonResp;
 import com.venux.train.common.resp.PageResp;
 import com.venux.train.common.util.SnowUtil;
-import io.seata.spring.annotation.GlobalTransactional;
+//import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
