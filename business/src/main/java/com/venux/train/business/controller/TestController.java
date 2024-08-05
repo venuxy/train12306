@@ -17,19 +17,20 @@ public class TestController {
     @SentinelResource("hello")
     @GetMapping("/hello")
     public String hello() throws InterruptedException {
-        Thread.sleep(500);
+//        Thread.sleep(500);
 //        int i = RandomUtil.randomInt(1, 10);
 //        if (i <= 2) {
 //            throw new RuntimeException("测试异常");
 //        }
+        testService.hello2();
         return "Hello World! Business!";
     }
 
     @SentinelResource("hello1")
     @GetMapping("/hello1")
     public String hello1() throws InterruptedException {
-        Thread.sleep(500);
-        //testService.hello2();
+//        Thread.sleep(500);
+        testService.hello2();
         return "Hello World! Business1!";
     }
 
