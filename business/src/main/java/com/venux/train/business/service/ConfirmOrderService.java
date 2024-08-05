@@ -3,6 +3,7 @@ package com.venux.train.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -14,6 +15,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.venux.train.business.domain.*;
 import com.venux.train.business.enums.ConfirmOrderStatusEnum;
+import com.venux.train.business.enums.RedisKeyPreEnum;
 import com.venux.train.business.enums.SeatColEnum;
 import com.venux.train.business.enums.SeatTypeEnum;
 import com.venux.train.business.mapper.ConfirmOrderMapper;
@@ -117,7 +119,8 @@ public class ConfirmOrderService {
              throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SK_TOKEN_FAIL);
          }
 
-        String lockKey = req.getDate() + "-" + req.getTrainCode();
+//        String lockKey = req.getDate() + "-" + req.getTrainCode();
+        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER + "-" + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
 
         // /**
         //   waitTime – the maximum time to acquire the lock 等待获取锁时间(最大尝试获得锁的时间)，超时返回false
