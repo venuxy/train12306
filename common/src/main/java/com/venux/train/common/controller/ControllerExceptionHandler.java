@@ -74,10 +74,10 @@ public class ControllerExceptionHandler {
      * @param e
      * @return
      */
-//    @ExceptionHandler(value = RuntimeException.class)
-//    @ResponseBody
-//    public CommonResp exceptionHandler(RuntimeException e) {
-//        throw e;
-//    }
+    @ExceptionHandler(value = RuntimeException.class)
+    @ResponseBody
+    public CommonResp exceptionHandler(RuntimeException e) {
+        throw e;
+    }
 
 }

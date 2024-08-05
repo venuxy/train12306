@@ -18,11 +18,11 @@ public class TestController {
     @GetMapping("/hello")
     public String hello() throws InterruptedException {
 //        Thread.sleep(500);
-//        int i = RandomUtil.randomInt(1, 10);
-//        if (i <= 2) {
-//            throw new RuntimeException("测试异常");
-//        }
-        testService.hello2();
+        int i = RandomUtil.randomInt(1, 10);
+        if (i <= 3) {
+            throw new RuntimeException("测试异常");
+        }
+        //testService.hello2();
         return "Hello World! Business!";
     }
 
