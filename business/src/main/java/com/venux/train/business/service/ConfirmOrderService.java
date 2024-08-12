@@ -147,21 +147,6 @@ public class ConfirmOrderService {
             String end = req.getEnd();
             List<ConfirmOrderTicketReq> tickets = req.getTickets();
 
-
-            ConfirmOrder confirmOrder = new ConfirmOrder();
-            confirmOrder.setId(SnowUtil.getSnowflakeNextId());
-            confirmOrder.setCreateTime(now);
-            confirmOrder.setUpdateTime(now);
-            confirmOrder.setMemberId(LoginMemberContext.getId());
-            confirmOrder.setDate(date);
-            confirmOrder.setTrainCode(trainCode);
-            confirmOrder.setStart(start);
-            confirmOrder.setEnd(end);
-            confirmOrder.setDailyTrainTicketId(req.getDailyTrainTicketId());
-            confirmOrder.setStatus(ConfirmOrderStatusEnum.INIT.getCode());
-            confirmOrder.setTickets(JSON.toJSONString(tickets));
-            confirmOrderMapper.insert(confirmOrder);
-
             // 查出余票记录，需要得到真实的库存
             DailyTrainTicket dailyTrainTicket = dailyTrainTicketService.selectByUnique(date, trainCode, start, end);
             LOG.info("查询余票记录:{}", dailyTrainTicket);
@@ -236,6 +221,22 @@ public class ConfirmOrderService {
 //         余票详情表修改余票；
 //         为会员增加购票记录
 //         更新确认订单为成功
+             // 从数据库里查出订单
+             ConfirmOrderExample confirmOrderExample = new ConfirmOrderExample();
+             confirmOrderExample.setOrderByClause("id asc");
+             ConfirmOrderExample.Criteria criteria = confirmOrderExample.createCriteria();
+             criteria.andDateEqualTo(req.getDate())
+                     .andTrainCodeEqualTo(req.getTrainCode())
+                     .andStatusEqualTo(ConfirmOrderStatusEnum.INIT.getCode());
+             List<ConfirmOrder> list = confirmOrderMapper.selectByExampleWithBLOBs(confirmOrderExample);
+             ConfirmOrder confirmOrder;
+             if (CollUtil.isEmpty(list)) {
+                 LOG.info("找不到原始订单，结束");
+                 return;
+             } else {
+                 LOG.info("本次处理{}条确认订单", list.size());
+                 confirmOrder = list.get(0);
+             }
             try {
                 afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeatList, tickets, confirmOrder);
             } catch (Exception e) {
