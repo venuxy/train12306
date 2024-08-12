@@ -67,6 +67,18 @@ public class ConfirmOrderDoReq {
     @NotBlank(message = "【图片验证码】不能为空")
     private String imageCode;
 
+
+
+
+
+    /**
+     * 日志跟踪号
+     */
+    private String logId;
+    public String getLogId() {
+        return logId;
+    }
+
     public String getImageCodeToken() {
         return imageCodeToken;
     }
@@ -84,6 +96,10 @@ public class ConfirmOrderDoReq {
 
     public Long getMemberId() {
         return memberId;
+    }
+
+    public void setLogId(String logId) {
+        this.logId = logId;
     }
 
     public void setMemberId(Long memberId) {

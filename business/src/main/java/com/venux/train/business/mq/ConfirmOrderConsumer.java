@@ -27,6 +27,8 @@ package com.venux.train.business.mq;// package com.venux.train.business.mq;
          byte[] body = messageExt.getBody();
 //         ConfirmOrderMQDto dto = JSON.parseObject(new String(body), ConfirmOrderMQDto.class);
 //         MDC.put("LOG_ID", dto.getLogId());
+         ConfirmOrderDoReq req = JSON.parseObject(new String(body), ConfirmOrderDoReq.class);
+         MDC.put("LOG_ID", req.getLogId());
          LOG.info("ROCKETMQ收到消息：{}", new String(body));
 //         confirmOrderService.doConfirm(dto);
      }
