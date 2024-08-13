@@ -136,6 +136,20 @@ SESSION_TICKET_PARAMS = 'SESSION_TICKET_PARAMS';
       <a-button type="danger" block @click="validFirstImageCode">提交验证码</a-button>
     </a-modal>
 
+  <a-modal v-model:visible="lineModalVisible" title="排队购票" :footer="null" :maskClosable="false" :closable="false"
+           style="top: 50px; width: 400px">
+    <div class="book-line">
+      <div v-show="confirmOrderLineCount < 0">
+        <loading-outlined /> 系统正在处理中...
+      </div>
+      <div v-show="confirmOrderLineCount >= 0">
+        <loading-outlined /> 您前面还有{{confirmOrderLineCount}}位用户在购票，排队中，请稍候
+      </div>
+    </div>
+    <br/>
+    <a-button type="danger" @click="onCancelOrder">取消购票</a-button>
+  </a-modal>
+
 </template>
 <script>
 import {defineComponent, onMounted, ref, watch, computed} from 'vue';
@@ -151,7 +165,6 @@ export default defineComponent({
     }
   },
   setup() {
-    const visible = ref(false);
     const passengers = ref([]);
     const passengerOptions = ref([]);
     const passengerChecks = ref([]);
@@ -182,6 +195,25 @@ export default defineComponent({
       }
     }
     console.log("本车次提供的座位：", seatTypes)
+
+    const tickets = ref([]);
+    const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
+    const visible = ref(false);
+    const lineModalVisible = ref(false);
+
+    // 勾选或去掉某个乘客时，在购票列表中加上或去掉一张表
+    watch(() => passengerChecks.value, (newVal, oldVal)=>{
+      console.log("勾选乘客发生变化", newVal, oldVal)
+      // 每次有变化时，把购票列表清空，重新构造列表
+      tickets.value = [];
+      passengerChecks.value.forEach((item) => tickets.value.push({
+        passengerId: item.id,
+        passengerType: item.type,
+        seatTypeCode: seatTypes[0].code,
+        passengerName: item.name,
+        passengerIdCard: item.idCard
+      }))
+    }, {immediate: true});
 
     // 0：不支持选座；1：选一等座；2：选二等座
     const chooseSeatType = ref(0);
@@ -343,7 +375,10 @@ export default defineComponent({
       }).then((response) => {
         let data = response.data;
         if (data.success) {
-          notification.success({description: "下单成功！"});
+          //notification.success({description: "下单成功！"});
+          visible.value = false;
+          imageCodeModalVisible.value = false;
+          lineModalVisible.value = true;
         } else {
           notification.error({description: data.message});
         }
@@ -413,22 +448,7 @@ export default defineComponent({
     //   seatTypeCode: "1",
     //   seat: "C1"
     // }
-    const tickets = ref([]);
-    const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
 
-    // 勾选或去掉某个乘客时，在购票列表中加上或去掉一张表
-    watch(() => passengerChecks.value, (newVal, oldVal)=>{
-      console.log("勾选乘客发生变化", newVal, oldVal)
-      // 每次有变化时，把购票列表清空，重新构造列表
-      tickets.value = [];
-      passengerChecks.value.forEach((item) => tickets.value.push({
-        passengerId: item.id,
-        passengerType: item.type,
-        seatTypeCode: seatTypes[0].code,
-        passengerName: item.name,
-        passengerIdCard: item.idCard
-      }))
-    }, {immediate: true});
 
     onMounted(() => {
       handleQueryPassenger();
@@ -460,7 +480,8 @@ export default defineComponent({
       firstImageCodeModalVisible,
       showFirstImageCodeModal,
       loadFirstImageCode,
-      validFirstImageCode
+      validFirstImageCode,
+      lineModalVisible,
     };
   },
 });
