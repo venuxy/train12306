@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +28,14 @@ public class ConfirmOrderController {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
+    @Value("${spring.profiles.active}")
+    private String env;
 
     @SentinelResource(value = "confirmOrderDo", blockHandler = "doConfirmBlock")
     @PostMapping("/do")
     public CommonResp<Object> doConfirm(@Valid @RequestBody ConfirmOrderDoReq req) {
-            // 图形验证码校验
+        if (!env.equals("dev")) {
+//             图形验证码校验
             String imageCodeToken = req.getImageCodeToken();
             String imageCode = req.getImageCode();
             String imageCodeRedis = stringRedisTemplate.opsForValue().get(imageCodeToken);
@@ -48,6 +52,11 @@ public class ConfirmOrderController {
             }
             beforeConfirmOrderService.beforeDoConfirm(req);
             return new CommonResp<>();
+
+        }
+        LOG.info("hhh");
+        Long id = beforeConfirmOrderService.beforeDoConfirm(req);
+        return new CommonResp<>(String.valueOf(id));
     }
 
     public CommonResp<Object> doConfirmBlock(ConfirmOrderDoReq req, BlockException e) {

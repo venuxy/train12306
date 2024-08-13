@@ -2,6 +2,7 @@ package com.venux.train.business.mq;// package com.venux.train.business.mq;
 
  import com.alibaba.fastjson.JSON;
 // import com.venux.train.business.dto.ConfirmOrderMQDto;
+ import com.venux.train.business.dto.ConfirmOrderMQDto;
  import com.venux.train.business.req.ConfirmOrderDoReq;
  import com.venux.train.business.service.ConfirmOrderService;
  import jakarta.annotation.Resource;
@@ -25,11 +26,9 @@ package com.venux.train.business.mq;// package com.venux.train.business.mq;
      @Override
      public void onMessage(MessageExt messageExt) {
          byte[] body = messageExt.getBody();
-//         ConfirmOrderMQDto dto = JSON.parseObject(new String(body), ConfirmOrderMQDto.class);
-//         MDC.put("LOG_ID", dto.getLogId());
-         ConfirmOrderDoReq req = JSON.parseObject(new String(body), ConfirmOrderDoReq.class);
-         MDC.put("LOG_ID", req.getLogId());
+         ConfirmOrderMQDto dto = JSON.parseObject(new String(body), ConfirmOrderMQDto.class);
+         MDC.put("LOG_ID", dto.getLogId());
          LOG.info("ROCKETMQ收到消息：{}", new String(body));
-//         confirmOrderService.doConfirm(dto);
+         confirmOrderService.doConfirm(dto);
      }
  }

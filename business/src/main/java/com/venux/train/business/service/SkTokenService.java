@@ -23,6 +23,7 @@ import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,9 @@ public class SkTokenService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Value("${spring.profiles.active}")
+    private String env;
 
     /**
      * 初始化
@@ -124,17 +128,19 @@ public class SkTokenService {
 
     public boolean validSkToken(Date date, String trainCode, Long memberId) {
          LOG.info("会员【{}】获取日期【{}】车次【{}】的令牌开始", memberId, DateUtil.formatDate(date), trainCode);
-//         令牌约等于库存，令牌没有了，就不再卖票，不需要再进入购票主流程去判断库存，判断令牌肯定比判断库存效率高
-         String lockKey = DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
-//         RLock lock = redissonClient.getLock(lockKey);
-//         Boolean setIfAbsent = lock.tryLock(3, 10, TimeUnit.SECONDS);
-         Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
-         if (Boolean.TRUE.equals(setIfAbsent)) {
-             LOG.info("恭喜，抢到令牌锁了！lockKey：{}", lockKey);
-         } else {
-             LOG.info("很遗憾，没抢到令牌锁！lockKey：{}", lockKey);
-             return false;
-         }
+         // 令牌约等于库存，令牌没有了，就不再卖票，不需要再进入购票主流程去判断库存，判断令牌肯定比判断库存效率高
+        // 需要去掉这段，否则发布生产后，体验多人排队功能时，会因拿不到锁而返回：等待5秒，加入20人时，只有第1次循环能拿到锁
+        if (!env.equals("dev")) {
+            // 先获取令牌锁，再校验令牌余量，防止机器人抢票，lockKey就是令牌，用来表示【谁能做什么】的一个凭证
+            String lockKey = RedisKeyPreEnum.SK_TOKEN + "-" + DateUtil.formatDate(date) + "-" + trainCode + "-" + memberId;
+            Boolean setIfAbsent = redisTemplate.opsForValue().setIfAbsent(lockKey, lockKey, 5, TimeUnit.SECONDS);
+            if (Boolean.TRUE.equals(setIfAbsent)) {
+                LOG.info("恭喜，抢到令牌锁了！lockKey：{}", lockKey);
+            } else {
+                LOG.info("很遗憾，没抢到令牌锁！lockKey：{}", lockKey);
+                return false;
+            }
+        }
 
         String skTokenCountKey = RedisKeyPreEnum.SK_TOKEN_COUNT + "-" + DateUtil.formatDate(date) + "-" + trainCode;
         Object skTokenCount = redisTemplate.opsForValue().get(skTokenCountKey);

@@ -6,7 +6,7 @@ import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.venux.train.business.domain.ConfirmOrder;
-//import com.venux.train.business.dto.ConfirmOrderMQDto;
+import com.venux.train.business.dto.ConfirmOrderMQDto;
 import com.venux.train.business.enums.ConfirmOrderStatusEnum;
 import com.venux.train.business.enums.RedisKeyPreEnum;
 import com.venux.train.business.enums.RocketMQTopicEnum;
@@ -51,7 +51,9 @@ public class BeforeConfirmOrderService {
     private ConfirmOrderService confirmOrderService;
 
     @SentinelResource(value = "beforeDoConfirm", blockHandler = "beforeDoConfirmBlock")
-    public void beforeDoConfirm(ConfirmOrderDoReq req) {
+    public long beforeDoConfirm(ConfirmOrderDoReq req) {
+        Long id = null;
+        // 根据前端传值，加入排队人数
         // 校验令牌余量
         boolean validSkToken = skTokenService.validSkToken(req.getDate(), req.getTrainCode(), LoginMemberContext.getId());
         if (validSkToken) {
@@ -60,14 +62,14 @@ public class BeforeConfirmOrderService {
             LOG.info("令牌校验不通过");
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_SK_TOKEN_FAIL);
         }
-        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER + "-" + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
-        Boolean setIfAbsent = redisMQTemplate.opsForValue().setIfAbsent(lockKey, "1", 5, TimeUnit.SECONDS);
-        if (Boolean.TRUE.equals(setIfAbsent)) {
-            LOG.info("获取锁成功");
-        } else {
-            LOG.info("获取锁失败");
-            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
-        }
+//        String lockKey = RedisKeyPreEnum.CONFIRM_ORDER + "-" + DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
+//        Boolean setIfAbsent = redisMQTemplate.opsForValue().setIfAbsent(lockKey, "1", 5, TimeUnit.SECONDS);
+//        if (Boolean.TRUE.equals(setIfAbsent)) {
+//            LOG.info("获取锁成功");
+//        } else {
+//            LOG.info("获取锁失败");
+//            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+//        }
 
         //保存确认订单表，状态设置为初始
         DateTime now = DateTime.now();
@@ -93,11 +95,19 @@ public class BeforeConfirmOrderService {
         confirmOrderMapper.insert(confirmOrder);
 
         //发送MQ排队购票
+        ConfirmOrderMQDto confirmOrderMQDto = new ConfirmOrderMQDto();
+        confirmOrderMQDto.setDate(req.getDate());
+        confirmOrderMQDto.setTrainCode(req.getTrainCode());
+        confirmOrderMQDto.setLogId(MDC.get("LOG_ID"));
+
         req.setLogId(MDC.get("LOG_ID"));
         String reqJson = JSON.toJSONString(req);
         LOG.info("发送MQ排队购票：{}", reqJson);
         rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(), reqJson);
         LOG.info("排队购票结束");
+        id = confirmOrder.getId();
+        return id;
+
     }
 
     /**
