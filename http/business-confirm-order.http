@@ -1,6 +1,6 @@
 POST http://localhost:8000/business/confirm-order/do
 Content-Type: application/json
-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjIzOTIzNzEsIm1vYmlsZSI6IjEzODAwMDAwMDAwIiwiaWQiOjEsImV4cCI6MTcyMjQ3ODc3MSwiaWF0IjoxNzIyMzkyMzcxfQ.gIgy40LyeJjg7CE5CtclgeWiB1u-LbrDZvQ_v2NxG74
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjM0ODM3MTAsIm1vYmlsZSI6IjE4ODQ0NjQyNTc5IiwiaWQiOjE4MDMzNzIyNzc1MDU1OTMzNDQsImV4cCI6MTcyMzc0MjkxMCwiaWF0IjoxNzIzNDgzNzEwfQ.CiuyE1gbjHr1427Q5NgeRyxpYCB6Ypq8J_ihQRPpNfM
 
 {
   "dailyTrainTicketId":1816757999490961408,
@@ -19,6 +19,6 @@ token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjIzOTIzNzEsIm1vYmlsZSI6
 
 ###
 
-GET http://localhost:8000/business/confirm-order/query-line-count/1662452972099080192
+GET http://localhost:8000/business/confirm-order/query-line-count/1817427090027450368
 Content-Type: application/json
-token: {{token}}
+token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYmYiOjE3MjM0ODM3MTAsIm1vYmlsZSI6IjE4ODQ0NjQyNTc5IiwiaWQiOjE4MDMzNzIyNzc1MDU1OTMzNDQsImV4cCI6MTcyMzc0MjkxMCwiaWF0IjoxNzIzNDgzNzEwfQ.CiuyE1gbjHr1427Q5NgeRyxpYCB6Ypq8J_ihQRPpNfM

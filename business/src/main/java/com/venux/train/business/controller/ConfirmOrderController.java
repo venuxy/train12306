@@ -31,6 +31,9 @@ public class ConfirmOrderController {
     @Value("${spring.profiles.active}")
     private String env;
 
+    @Resource
+    private ConfirmOrderService confirmOrderService;
+
     @SentinelResource(value = "confirmOrderDo", blockHandler = "doConfirmBlock")
     @PostMapping("/do")
     public CommonResp<Object> doConfirm(@Valid @RequestBody ConfirmOrderDoReq req) {
@@ -54,11 +57,21 @@ public class ConfirmOrderController {
             return new CommonResp<>();
 
         }
-        LOG.info("hhh");
         Long id = beforeConfirmOrderService.beforeDoConfirm(req);
         return new CommonResp<>(String.valueOf(id));
     }
 
+    @GetMapping("/query-line-count/{id}")
+    public CommonResp<Integer> queryLineCount(@PathVariable Long id) {
+        Integer count = confirmOrderService.queryLineCount(id);
+        return new CommonResp<>(count);
+    }
+
+    @GetMapping("/cancel/{id}")
+    public CommonResp<Integer> cancel(@PathVariable Long id) {
+        Integer count = confirmOrderService.cancel(id);
+        return new CommonResp<>(count);
+    }
     public CommonResp<Object> doConfirmBlock(ConfirmOrderDoReq req, BlockException e) {
         LOG.info("ConfirmOrderController购票请求被限流：{}", req);
         // throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_FLOW_EXCEPTION);
